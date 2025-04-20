@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Khách Hàng</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #2e2e2e;
+      color: white;
+      position: fixed;
+      padding-top: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul a {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+      font-size: 15px;
+    }
+
+    .sidebar ul a:hover {
+      background: #3d3d3d;
+      cursor: pointer;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    h1, h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .button {
+      background-color: #2ecc71;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #27ae60;
+    }
+
+    .btn-danger {
+      background-color: #e74c3c;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+
+    input {
+      padding: 8px;
+      margin-bottom: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input:disabled {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+    }
+
+    .table-container {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #eaeaea;
+      color: #333;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .success-message {
+      color: green;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+
+    .logout {
+      border-top: 1px solid #444;
+      margin-top: auto;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <a href="trangchu.html"><i class="fas fa-home menu-icon"></i>Trang Chủ</a>
+      <a href="quanlytaikhoan.html"><i class="fas fa-user-shield menu-icon"></i>Quản Lý Tài Khoản</a>
+      <a href="datphong.html"><i class="fas fa-bed menu-icon"></i>Đặt Phòng</a>
+      <a href="datphongonline.html"><i class="fas fa-globe menu-icon"></i>Đặt Phòng Online</a>
+      <a href="timkiemthongtin.html"><i class="fas fa-search menu-icon"></i>Tìm Kiếm Thông Tin</a>
+      <a href="nhanphong.html"><i class="fas fa-door-open menu-icon"></i>Nhận Phòng</a>
+      <a href="traphong.html"><i class="fas fa-door-closed menu-icon"></i>Trả Phòng</a>
+      <a href="dichvu.html"><i class="fas fa-concierge-bell menu-icon"></i>Dịch Vụ</a>
+      <a href="khachhang.html"><i class="fas fa-users menu-icon"></i>Khách Hàng</a>
+      <a href="xemdatphong.html"><i class="fas fa-calendar-check menu-icon"></i>Xem Đặt Phòng</a>
+      <a href="huydatphong.html"><i class="fas fa-calendar-times menu-icon"></i>Hủy Đặt Phòng</a>
+      <a href="giaphong.html"><i class="fas fa-money-bill menu-icon"></i>Giá Phòng</a>
+      <a href="doanhthu.html"><i class="fas fa-chart-line menu-icon"></i>Doanh Thu</a>
+      <a href="baocao.html"><i class="fas fa-file-alt menu-icon"></i>Báo Cáo</a>
+    </ul>
+    <ul class="logout">
+      <a href="dangnhap.html"><i class="fas fa-sign-out-alt menu-icon"></i>Đăng Xuất</a>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Quản Lý Khách Hàng</h1>
+
+    <!-- Form Thêm và Cập Nhật Khách Hàng -->
+    <div class="form-group">
+      <h2>Thêm hoặc Cập Nhật Khách Hàng</h2>
+      <form id="customerForm">
+        <input type="text" id="tenKhach" placeholder="Nhập tên khách hàng" required />
+        <div class="tooltip">
+          <input type="text" id="cccd" placeholder="Nhập số CCCD" required />
+          <span class="tooltiptext" id="cccdTooltip" style="display: none;">CCCD không thể chỉnh sửa do khách hàng có đặt phòng hiệu lực.</span>
+        </div>
+        <input type="text" id="soDienThoai" placeholder="Nhập số điện thoại" required />
+        <input type="email" id="email" placeholder="Nhập email" required />
+        <button type="submit" class="button">Lưu Thông Tin</button>
+        <button type="button" class="btn-danger" onclick="resetForm()">Xóa Form</button>
+      </form>
+      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <!-- Bảng Khách Hàng -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>CCCD</th>
+            <th>Tên Khách Hàng</th>
+            <th>Số Điện Thoại</th>
+            <th>Email</th>
+            <th>Ngày Tạo</th>
+            <th>Chỉnh Sửa</th>
+            <th>Xóa</th>
+          </tr>
+        </thead>
+        <tbody id="customerData">
+          <!-- Dữ liệu khách hàng sẽ được chèn vào đây -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let customers = JSON.parse(localStorage.getItem("khachHang")) || [];
+    let danhSachPhong = JSON.parse(localStorage.getItem("datPhong")) || [];
+    let isSubmitting = false;
+
+    // Migrate old khachHang data
+    if (customers.some(c => c.id || c.idCard || c.name)) {
+      customers = customers.map(c => ({
+        cccd: c.idCard || c.cccd,
+        tenKhach: c.name || c.tenKhach,
+        soDienThoai: c.phone || c.soDienThoai,
+        email: c.email,
+        createdAt: c.createdAt || new Date().toISOString()
+      }));
+      localStorage.setItem("khachHang", JSON.stringify(customers));
+      console.log("Đã chuyển đổi dữ liệu khachHang:", customers);
+    }
+
+    // Hàm hiển thị dữ liệu khách hàng lên bảng
+    function displayCustomers() {
+      const tableBody = document.getElementById("customerData");
+      tableBody.innerHTML = "";
+      if (customers.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" class="no-data">Không có dữ liệu khách hàng. Vui lòng thêm khách hàng mới.</td></tr>`;
+        console.log("Hiển thị khách hàng:", { validItems: 0, invalidItems: 0 });
+        return;
+      }
+      customers.forEach(customer => {
+        if (!customer.cccd || !customer.tenKhach) {
+          console.warn("Dữ liệu khách hàng không hợp lệ:", customer);
+          return;
+        }
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${customer.cccd}</td>
+          <td>${customer.tenKhach}</td>
+          <td>${customer.soDienThoai}</td>
+          <td>${customer.email}</td>
+          <td>${new Date(customer.createdAt).toLocaleDateString("vi-VN")}</td>
+          <td><button class="button" onclick="editCustomer('${customer.cccd}')">Chỉnh Sửa</button></td>
+          <td><button class="btn-danger" onclick="deleteCustomer('${customer.cccd}')">Xóa</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+      console.log("Hiển thị khách hàng:", { validItems: customers.length, invalidItems: 0 });
+    }
+
+    // Hàm hiển thị thông báo
+    function showMessage(message, isSuccess = false) {
+      const messageElement = isSuccess ? document.getElementById("successMessage") : document.getElementById("errorMessage");
+      messageElement.textContent = message;
+      messageElement.style.display = "block";
+      setTimeout(() => {
+        messageElement.style.display = "none";
+      }, 3000);
+    }
+
+    // Hàm kiểm tra CCCD hợp lệ
+    function kiemTraCCCD(cccd, excludeCccd = null) {
+      const regex = /^\d{12}$/;
+      if (!regex.test(cccd)) {
+        return "Số CCCD phải là 12 chữ số!";
+      }
+      if (customers.some(c => c.cccd === cccd && c.cccd !== excludeCccd)) {
+        return "Số CCCD đã tồn tại!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra tên khách hợp lệ
+    function kiemTraTenKhach(tenKhach) {
+      const regex = /^[a-zA-ZÀ-ỹ\s]+$/;
+      if (!tenKhach || tenKhach.length < 2) {
+        return "Tên khách hàng không được để trống và phải có ít nhất 2 ký tự!";
+      }
+      if (!regex.test(tenKhach)) {
+        return "Tên khách hàng chỉ được chứa chữ cái và dấu cách!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra số điện thoại hợp lệ
+    function kiemTraSoDienThoai(soDienThoai) {
+      const regex = /^0\d{9}$/;
+      if (!regex.test(soDienThoai)) {
+        return "Số điện thoại phải là 10 chữ số và bắt đầu bằng 0!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra email hợp lệ
+    function kiemTraEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regex.test(email)) {
+        return "Email không hợp lệ!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra khách hàng có đặt phòng đang hiệu lực
+    function kiemTraDatPhong(cccd) {
+      return danhSachPhong.some(phong => 
+        phong.cccd === cccd && 
+        phong.trangThai !== "Đã hủy" && 
+        phong.trangThai !== "Đã trả"
+      );
+    }
+
+    // Hàm xóa form
+    function resetForm() {
+      document.getElementById("customerForm").reset();
+      document.getElementById("cccd").disabled = false;
+      document.getElementById("cccdTooltip").style.display = "none";
+      document.getElementById("errorMessage").style.display = "none";
+      document.getElementById("successMessage").style.display = "none";
+    }
+
+    // Hàm thêm hoặc cập nhật khách hàng
+    document.getElementById("customerForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (isSubmitting) return;
+      isSubmitting = true;
+      setTimeout(() => { isSubmitting = false; }, 500);
+
+      const tenKhach = document.getElementById("tenKhach").value.trim();
+      const cccd = document.getElementById("cccd").value.trim();
+      const soDienThoai = document.getElementById("soDienThoai").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      // Kiểm tra dữ liệu
+      let cccdError = kiemTraCCCD(cccd);
+      const tenKhachError = kiemTraTenKhach(tenKhach);
+      const phoneError = kiemTraSoDienThoai(soDienThoai);
+      const emailError = kiemTraEmail(email);
+
+      if (tenKhachError) {
+        showMessage(tenKhachError);
+        isSubmitting = false;
+        return;
+      }
+      if (cccdError) {
+        showMessage(cccdError);
+        isSubmitting = false;
+        return;
+      }
+      if (phoneError) {
+        showMessage(phoneError);
+        isSubmitting = false;
+        return;
+      }
+      if (emailError) {
+        showMessage(emailError);
+        isSubmitting = false;
+        return;
+      }
+
+      const existingCustomer = customers.find(c => c.cccd === cccd);
+      if (existingCustomer) {
+        // Cập nhật khách hàng
+        if (kiemTraDatPhong(cccd) && cccd !== existingCustomer.cccd) {
+          showMessage("Không thể thay đổi CCCD vì khách hàng có đặt phòng hiệu lực!");
+          isSubmitting = false;
+          return;
+        }
+        existingCustomer.tenKhach = tenKhach;
+        existingCustomer.soDienThoai = soDienThoai;
+        existingCustomer.email = email;
+        showMessage("Cập nhật khách hàng thành công!", true);
+        console.log(`[${new Date().toISOString()}] Cập nhật khách hàng:`, existingCustomer);
+      } else {
+        // Thêm khách hàng mới
+        const newCustomer = {
+          cccd,
+          tenKhach,
+          soDienThoai,
+          email,
+          createdAt: new Date().toISOString()
+        };
+        customers.push(newCustomer);
+        showMessage("Thêm khách hàng thành công!", true);
+        console.log(`[${new Date().toISOString()}] Thêm khách hàng:`, newCustomer);
+      }
+
+      // Lưu vào localStorage
+      localStorage.setItem("khachHang", JSON.stringify(customers));
+      displayCustomers();
+      resetForm();
+    });
+
+    // Hàm chỉnh sửa thông tin khách hàng
+    function editCustomer(cccd) {
+      const customer = customers.find(c => c.cccd === cccd);
+      if (customer) {
+        const cccdInput = document.getElementById("cccd");
+        const cccdTooltip = document.getElementById("cccdTooltip");
+        document.getElementById("tenKhach").value = customer.tenKhach;
+        cccdInput.value = customer.cccd;
+        document.getElementById("soDienThoai").value = customer.soDienThoai;
+        document.getElementById("email").value = customer.email;
+        const hasActiveBooking = kiemTraDatPhong(cccd);
+        cccdInput.disabled = hasActiveBooking;
+        cccdTooltip.style.display = hasActiveBooking ? "block" : "none";
+        console.log(`[${new Date().toISOString()}] Chỉnh sửa khách hàng:`, customer);
+      }
+    }
+
+    // Hàm xóa khách hàng
+    function deleteCustomer(cccd) {
+      const customer = customers.find(c => c.cccd === cccd);
+      if (!customer) return;
+      if (kiemTraDatPhong(cccd)) {
+        showMessage("Không thể xóa khách hàng đang có đặt phòng hiệu lực!");
+        console.log(`[${new Date().toISOString()}] Xóa khách hàng thất bại do đặt phòng hiệu lực:`, customer);
+        return;
+      }
+      if (confirm(`Bạn có chắc chắn muốn xóa khách hàng ${customer.tenKhach}?`)) {
+        const index = customers.findIndex(c => c.cccd === cccd);
+        if (index !== -1) {
+          const deletedCustomer = customers.splice(index, 1)[0];
+          localStorage.setItem("khachHang", JSON.stringify(customers));
+          displayCustomers();
+          showMessage("Xóa khách hàng thành công!", true);
+          console.log(`[${new Date().toISOString()}] Xóa khách hàng:`, deletedCustomer);
+        }
+      }
+    }
+
+    // Hiển thị dữ liệu khách hàng khi trang được tải
+    window.onload = displayCustomers;
+  </script>
+</body>
+</html>

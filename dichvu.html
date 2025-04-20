@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Dịch Vụ</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #2e2e2e;
+      color: white;
+      position: fixed;
+      padding-top: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul a {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+      font-size: 15px;
+    }
+
+    .sidebar ul a:hover {
+      background: #3d3d3d;
+      cursor: pointer;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    .button {
+      background: #2ecc71;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .button:hover {
+      background: #27ae60;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input, select {
+      padding: 8px;
+      margin-right: 8px;
+      width: 200px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .table-container {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #eaeaea;
+    }
+
+    .logout {
+      border-top: 1px solid #444;
+      margin-top: auto;
+    }
+
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .success-message {
+      color: green;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+
+    input:disabled, select:disabled {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <a href="trangchu.html"><i class="fas fa-home menu-icon"></i>Trang Chủ</a>
+      <a href="quanlytaikhoan.html"><i class="fas fa-user-shield menu-icon"></i>Quản Lý Tài Khoản</a>
+      <a href="datphong.html"><i class="fas fa-bed menu-icon"></i>Đặt Phòng</a>
+      <a href="datphongonline.html"><i class="fas fa-globe menu-icon"></i>Đặt Phòng Online</a>
+      <a href="timkiemthongtin.html"><i class="fas fa-search menu-icon"></i>Tìm Kiếm Thông Tin</a>
+      <a href="nhanphong.html"><i class="fas fa-door-open menu-icon"></i>Nhận Phòng</a>
+      <a href="traphong.html"><i class="fas fa-door-closed menu-icon"></i>Trả Phòng</a>
+      <a href="dichvu.html"><i class="fas fa-concierge-bell menu-icon"></i>Dịch Vụ</a>
+      <a href="khachhang.html"><i class="fas fa-users menu-icon"></i>Khách Hàng</a>
+      <a href="xemdatphong.html"><i class="fas fa-calendar-check menu-icon"></i>Xem Đặt Phòng</a>
+      <a href="huydatphong.html"><i class="fas fa-calendar-times menu-icon"></i>Hủy Đặt Phòng</a>
+      <a href="giaphong.html"><i class="fas fa-money-bill menu-icon"></i>Giá Phòng</a>
+      <a href="doanhthu.html"><i class="fas fa-chart-line menu-icon"></i>Doanh Thu</a>
+      <a href="baocao.html"><i class="fas fa-file-alt menu-icon"></i>Báo Cáo</a>
+    </ul>
+    <ul class="logout">
+      <a href="dangnhap.html"><i class="fas fa-sign-out-alt menu-icon"></i>Đăng Xuất</a>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Quản Lý Dịch Vụ</h1>
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+
+    <div class="form-group">
+      <h2>Thêm Dịch Vụ</h2>
+      <input type="text" id="serviceName" placeholder="Tên Dịch Vụ" required>
+      <input type="number" id="servicePrice" placeholder="Giá Dịch Vụ (VND)" required>
+      <button class="button" onclick="themDichVu()">Thêm Dịch Vụ</button>
+    </div>
+
+    <div class="form-group">
+      <h2>Gán Dịch Vụ Cho Khách Hàng</h2>
+      <select id="khachHang">
+        <option value="">Chọn khách hàng</option>
+      </select>
+      <select id="dichVu">
+        <option value="">Chọn dịch vụ</option>
+      </select>
+      <button class="button" onclick="ganDichVu()">Gán Dịch Vụ</button>
+    </div>
+
+    <div class="table-container">
+      <h2>Danh Sách Dịch Vụ</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên Dịch Vụ</th>
+            <th>Giá (VND)</th>
+            <th>Hành Động</th>
+          </tr>
+        </thead>
+        <tbody id="serviceData"></tbody>
+      </table>
+    </div>
+
+    <div class="table-container">
+      <h2>Dịch Vụ Đã Gán (Đang Sử Dụng)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tên Khách</th>
+            <th>CCCD</th>
+            <th>Loại Phòng</th>
+            <th>Tên Dịch Vụ</th>
+            <th>Giá (VND)</th>
+            <th>Hành Động</th>
+          </tr>
+        </thead>
+        <tbody id="assignedServiceData"></tbody>
+      </table>
+    </div>
+
+    <div class="table-container">
+      <h2>Dịch Vụ Đã Gán (Đã Trả Phòng)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tên Khách</th>
+            <th>CCCD</th>
+            <th>Loại Phòng</th>
+            <th>Tên Dịch Vụ</th>
+            <th>Giá (VND)</th>
+            <th>Ngày Trả Phòng</th>
+          </tr>
+        </thead>
+        <tbody id="checkedOutServiceData"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let danhSachDichVu = JSON.parse(localStorage.getItem("dichVu")) || [];
+    let danhSachPhong = JSON.parse(localStorage.getItem("datPhong")) || [];
+    let danhSachDichVuGan = JSON.parse(localStorage.getItem("dichVuGan")) || [];
+
+    // Hàm hiển thị thông báo
+    function showMessage(message, isSuccess = false) {
+      const messageElement = isSuccess ? document.getElementById("successMessage") : document.getElementById("errorMessage");
+      messageElement.textContent = message;
+      messageElement.style.display = "block";
+      setTimeout(() => {
+        messageElement.style.display = "none";
+      }, 3000);
+    }
+
+    // Hàm kiểm tra tên dịch vụ
+    function kiemTraTenDichVu(name) {
+      const regex = /^[A-Za-z\s]+$/;
+      if (!name.trim()) {
+        return "Tên dịch vụ không được để trống!";
+      }
+      if (!regex.test(name)) {
+        return "Tên dịch vụ chỉ được chứa chữ cái và khoảng trắng!";
+      }
+      return null;
+    }
+
+    // Hiển thị danh sách dịch vụ
+    function hienThiDanhSachDichVu() {
+      const tbody = document.getElementById("serviceData");
+      tbody.innerHTML = "";
+      if (!danhSachDichVu.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="no-data">Không có dịch vụ nào. Vui lòng thêm dịch vụ ở trên.</td></tr>`;
+      }
+      danhSachDichVu.forEach((dichVu, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td><input type="text" value="${dichVu.name}" onchange="capNhatTenDichVu(${index}, this.value)"></td>
+            <td><input type="number" value="${dichVu.price}" onchange="capNhatGiaDichVu(${index}, this.value)"></td>
+            <td>
+              <button class="btn-danger" onclick="xoaDichVu(${index})">Xóa</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      const selectDichVu = document.getElementById("dichVu");
+      selectDichVu.innerHTML = '<option value="">Chọn dịch vụ</option>';
+      danhSachDichVu.forEach((dichVu, index) => {
+        selectDichVu.innerHTML += `<option value="${index}">${dichVu.name}</option>`;
+      });
+
+      console.log("Danh sách dịch vụ:", danhSachDichVu);
+    }
+
+    // Hiển thị danh sách khách hàng
+    function hienThiDanhSachKhachHang() {
+      const selectKhachHang = document.getElementById("khachHang");
+      selectKhachHang.innerHTML = '<option value="">Chọn khách hàng</option>';
+      const activeBookings = danhSachPhong.filter(phong => phong.trangThai === "Đã nhận");
+      if (!activeBookings.length) {
+        showMessage("Không có khách hàng nào đang sử dụng phòng (trạng thái Đã nhận). Vui lòng kiểm tra ở trang Nhận Phòng.");
+      }
+      activeBookings.forEach(phong => {
+        selectKhachHang.innerHTML += `<option value="${phong.cccd}">${phong.tenKhach} (${phong.cccd}) - ${phong.loaiPhong}</option>`;
+      });
+
+      console.log("Khách hàng (Đã nhận):", activeBookings);
+    }
+
+    // Hiển thị dịch vụ đã gán (Đang sử dụng)
+    function hienThiDichVuGan() {
+      const tbody = document.getElementById("assignedServiceData");
+      tbody.innerHTML = "";
+      let validAssignments = 0;
+      let invalidAssignments = 0;
+
+      if (!danhSachDichVuGan.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data">Không có dịch vụ nào được gán.</td></tr>`;
+      }
+
+      danhSachDichVuGan.forEach((item, index) => {
+        const dichVu = danhSachDichVu[item.dichVuIndex];
+        const phong = danhSachPhong.find(p => p.cccd === item.cccd && p.trangThai === "Đã nhận");
+        if (!dichVu || !phong) {
+          console.warn("Dịch vụ gán không hợp lệ:", item);
+          invalidAssignments++;
+          return;
+        }
+        validAssignments++;
+        tbody.innerHTML += `
+          <tr>
+            <td>${phong.tenKhach}</td>
+            <td>${item.cccd}</td>
+            <td>${item.loaiPhong}</td>
+            <td>${dichVu.name}</td>
+            <td>${dichVu.price.toLocaleString()}</td>
+            <td>
+              <button class="btn-danger" onclick="xoaDichVuGan(${index})">Xóa</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      console.log("Dịch vụ gán (Đang sử dụng):", danhSachDichVuGan, `Valid: ${validAssignments}, Invalid: ${invalidAssignments}`);
+    }
+
+    // Hiển thị dịch vụ đã gán (Đã trả phòng)
+    function hienThiDichVuDaTra() {
+      const tbody = document.getElementById("checkedOutServiceData");
+      tbody.innerHTML = "";
+      let validAssignments = 0;
+      let invalidAssignments = 0;
+
+      if (!danhSachDichVuGan.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data">Không có dịch vụ nào được gán cho phòng đã trả.</td></tr>`;
+      }
+
+      danhSachDichVuGan.forEach(item => {
+        const dichVu = danhSachDichVu[item.dichVuIndex];
+        const phong = danhSachPhong.find(p => p.cccd === item.cccd && p.trangThai === "Đã trả");
+        if (!dichVu || !phong) {
+          console.warn("Dịch vụ gán không hợp lệ cho Đã trả:", item);
+          invalidAssignments++;
+          return;
+        }
+        validAssignments++;
+        tbody.innerHTML += `
+          <tr>
+            <td>${phong.tenKhach}</td>
+            <td>${item.cccd}</td>
+            <td>${item.loaiPhong}</td>
+            <td>${dichVu.name}</td>
+            <td>${dichVu.price.toLocaleString()}</td>
+            <td>${phong.ngayTraPhong}</td>
+          </tr>
+        `;
+      });
+
+      console.log("Dịch vụ gán (Đã trả):", danhSachDichVuGan.filter(item => danhSachPhong.some(p => p.cccd === item.cccd && p.trangThai === "Đã trả")), `Valid: ${validAssignments}, Invalid: ${invalidAssignments}`);
+    }
+
+    // Thêm dịch vụ
+    function themDichVu() {
+      const name = document.getElementById("serviceName").value.trim();
+      const price = parseFloat(document.getElementById("servicePrice").value);
+
+      const nameError = kiemTraTenDichVu(name);
+      if (nameError) {
+        showMessage(nameError);
+        return;
+      }
+      if (isNaN(price) || price <= 0) {
+        showMessage("Giá dịch vụ phải là số dương!");
+        return;
+      }
+      danhSachDichVu.push({ name, price });
+      localStorage.setItem("dichVu", JSON.stringify(danhSachDichVu));
+      showMessage(`Thêm dịch vụ ${name} thành công!`, true);
+      hienThiDanhSachDichVu();
+      document.getElementById("serviceName").value = "";
+      document.getElementById("servicePrice").value = "";
+    }
+
+    // Cập nhật tên dịch vụ
+    function capNhatTenDichVu(index, value) {
+      const nameError = kiemTraTenDichVu(value);
+      if (nameError) {
+        showMessage(nameError);
+        hienThiDanhSachDichVu();
+        return;
+      }
+      danhSachDichVu[index].name = value.trim();
+      localStorage.setItem("dichVu", JSON.stringify(danhSachDichVu));
+      showMessage(`Cập nhật tên dịch vụ thành công!`, true);
+      hienThiDanhSachDichVu();
+    }
+
+    // Cập nhật giá dịch vụ
+    function capNhatGiaDichVu(index, value) {
+      const price = parseFloat(value);
+      if (isNaN(price) || price <= 0) {
+        showMessage("Giá dịch vụ phải là số dương!");
+        hienThiDanhSachDichVu();
+        return;
+      }
+      danhSachDichVu[index].price = price;
+      localStorage.setItem("dichVu", JSON.stringify(danhSachDichVu));
+      showMessage(`Cập nhật giá dịch vụ thành công!`, true);
+      hienThiDanhSachDichVu();
+    }
+
+    // Xóa dịch vụ
+    function xoaDichVu(index) {
+      if (confirm("Bạn có chắc chắn muốn xóa dịch vụ này?")) {
+        if (danhSachDichVuGan.some(item => item.dichVuIndex === index)) {
+          showMessage("Không thể xóa dịch vụ vì đã được gán cho khách hàng!");
+          return;
+        }
+        danhSachDichVu.splice(index, 1);
+        localStorage.setItem("dichVu", JSON.stringify(danhSachDichVu));
+        showMessage(`Xóa dịch vụ thành công!`, true);
+        hienThiDanhSachDichVu();
+      }
+    }
+
+    // Gán dịch vụ cho khách hàng
+    function ganDichVu() {
+      const cccd = document.getElementById("khachHang").value;
+      const dichVuIndex = document.getElementById("dichVu").value;
+
+      if (!cccd || dichVuIndex === "") {
+        showMessage("Vui lòng chọn khách hàng và dịch vụ!");
+        return;
+      }
+
+      const phong = danhSachPhong.find(p => p.cccd === cccd && p.trangThai === "Đã nhận");
+      if (!phong) {
+        showMessage("Khách hàng không hợp lệ hoặc không ở trạng thái Đã nhận!");
+        return;
+      }
+
+      if (danhSachDichVuGan.some(item => item.cccd === cccd && item.dichVuIndex === parseInt(dichVuIndex))) {
+        showMessage("Dịch vụ này đã được gán cho khách hàng!");
+        return;
+      }
+
+      danhSachDichVuGan.push({ cccd, loaiPhong: phong.loaiPhong, dichVuIndex: parseInt(dichVuIndex) });
+      localStorage.setItem("dichVuGan", JSON.stringify(danhSachDichVuGan));
+      showMessage(`Gán dịch vụ thành công cho ${phong.tenKhach}!`, true);
+      hienThiDichVuGan();
+    }
+
+    // Xóa dịch vụ đã gán
+    function xoaDichVuGan(index) {
+      const item = danhSachDichVuGan[index];
+      const phong = danhSachPhong.find(p => p.cccd === item.cccd);
+      if (phong && phong.trangThai === "Đã trả") {
+        showMessage("Không thể xóa dịch vụ đã gán cho phòng đã trả!");
+        return;
+      }
+      if (confirm("Bạn có chắc chắn muốn xóa dịch vụ đã gán này?")) {
+        danhSachDichVuGan.splice(index, 1);
+        localStorage.setItem("dichVuGan", JSON.stringify(danhSachDichVuGan));
+        showMessage(`Xóa dịch vụ gán thành công!`, true);
+        hienThiDichVuGan();
+      }
+    }
+
+    // Hiển thị khi trang được tải
+    window.onload = () => {
+      hienThiDanhSachDichVu();
+      hienThiDanhSachKhachHang();
+      hienThiDichVuGan();
+      hienThiDichVuDaTra();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đặt Phòng</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+      overflow-x: hidden;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #2e2e2e;
+      color: white;
+      position: fixed;
+      padding-top: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+
+    .sidebar.hidden {
+      transform: translateX(-250px);
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+      font-size: 14px;
+      font-weight: 400;
+      transition: background 0.2s;
+    }
+
+    .sidebar ul a:hover {
+      background: #3d3d3d;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      transition: margin-left 0.3s;
+    }
+
+    .main-content.full {
+      margin-left: 0;
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1100;
+    }
+
+    .backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .backdrop.active {
+      display: block;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+      margin-bottom: 15px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 4px;
+      font-weight: 400;
+    }
+
+    input, select {
+      padding: 6px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input:disabled {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+    }
+
+    .btn-add {
+      background: linear-gradient(to bottom, #2ecc71, #27ae60);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 0.3s;
+    }
+
+    .btn-add:hover {
+      background: linear-gradient(to bottom, #27ae60, #219653);
+    }
+
+    .btn-add.submitting::after {
+      content: "";
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 5px;
+    }
+
+    .btn-danger {
+      background: linear-gradient(to bottom, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.3s;
+    }
+
+    .btn-danger:hover {
+      background: linear-gradient(to bottom, #c0392b, #a32f25);
+    }
+
+    .table-container {
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f8f8f8;
+      color: #333;
+      font-weight: 600;
+    }
+
+    td.text-ellipsis {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .error-message, .success-message {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      animation: fadeIn 0.3s;
+      display: none;
+    }
+
+    .error-message {
+      background: #ffe6e6;
+      color: #e74c3c;
+    }
+
+    .success-message {
+      background: #e6ffed;
+      color: #2ecc71;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      padding: 15px;
+      font-size: 14px;
+    }
+
+    .logout {
+      border-top: 1px solid #444;
+      margin-top: auto;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 180px;
+      background: #2ecc71;
+      color: white;
+      text-align: center;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 12px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -90px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+    }
+
+    .modal-content {
+      background: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 6px;
+      max-width: 500px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-content h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .modal-content .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .close-modal {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+      color: #666;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-250px);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 800px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+  <div class="backdrop" id="backdrop" onclick="toggleSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <a href="trangchu.html"><i class="fas fa-home menu-icon"></i>Trang Chủ</a>
+      <a href="quanlytaikhoan.html"><i class="fas fa-user-shield menu-icon"></i>Quản Lý Tài Khoản</a>
+      <a href="datphong.html"><i class="fas fa-bed menu-icon"></i>Đặt Phòng</a>
+      <a href="datphongonline.html"><i class="fas fa-globe menu-icon"></i>Đặt Phòng Online</a>
+      <a href="timkiemthongtin.html"><i class="fas fa-search menu-icon"></i>Tìm Kiếm Thông Tin</a>
+      <a href="nhanphong.html"><i class="fas fa-door-open menu-icon"></i>Nhận Phòng</a>
+      <a href="traphong.html"><i class="fas fa-door-closed menu-icon"></i>Trả Phòng</a>
+      <a href="dichvu.html"><i class="fas fa-concierge-bell menu-icon"></i>Dịch Vụ</a>
+      <a href="khachhang.html"><i class="fas fa-users menu-icon"></i>Khách Hàng</a>
+      <a href="xemdatphong.html"><i class="fas fa-calendar-check menu-icon"></i>Xem Đặt Phòng</a>
+      <a href="huydatphong.html"><i class="fas fa-calendar-times menu-icon"></i>Hủy Đặt Phòng</a>
+      <a href="giaphong.html"><i class="fas fa-money-bill menu-icon"></i>Giá Phòng</a>
+      <a href="doanhthu.html"><i class="fas fa-chart-line menu-icon"></i>Doanh Thu</a>
+      <a href="baocao.html"><i class="fas fa-file-alt menu-icon"></i>Báo Cáo</a>
+    </ul>
+    <ul class="logout">
+      <a href="dangnhap.html"><i class="fas fa-sign-out-alt menu-icon"></i>Đăng Xuất</a>
+    </ul>
+  </div>
+
+  <div class="main-content" id="mainContent">
+    <h1>Quản Lý Đặt Phòng</h1>
+
+    <div class="form-group">
+      <form id="bookingForm" class="form-grid">
+        <div>
+          <label for="tenKhach">Tên Khách Hàng</label>
+          <input type="text" id="tenKhach" placeholder="Nhập tên khách hàng" required>
+        </div>
+        <div class="tooltip">
+          <label for="cccd">Số CCCD</label>
+          <input type="text" id="cccd" placeholder="Nhập số CCCD" required>
+          <span class="tooltiptext" id="cccdTooltip" style="display: none;">CCCD không thể chỉnh sửa do trạng thái hiệu lực.</span>
+        </div>
+        <div>
+          <label for="soDienThoai">Số Điện Thoại</label>
+          <input type="text" id="soDienThoai" placeholder="Nhập số điện thoại" required>
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Nhập email" required>
+        </div>
+        <div>
+          <label for="loaiPhong">Loại Phòng</label>
+          <select id="loaiPhong" required>
+            <option value="">Chọn loại phòng</option>
+          </select>
+        </div>
+        <div>
+          <label for="ngayDen">Ngày Đến</label>
+          <input type="date" id="ngayDen" required>
+        </div>
+        <div>
+          <label for="ngayDi">Ngày Đi</label>
+          <input type="date" id="ngayDi" required>
+        </div>
+        <div>
+          <label for="trangThai">Trạng Thái</label>
+          <select id="trangThai" required>
+            <option value="Đang chờ">Đang chờ</option>
+            <option value="Đã nhận">Đã nhận</option>
+            <option value="Đã hủy">Đã hủy</option>
+            <option value="Đã trả">Đã trả</option>
+          </select>
+        </div>
+      </form>
+      <button class="btn-add" onclick="themDatPhong()"><i class="fas fa-plus"></i> Thêm</button>
+      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Tên Khách</th>
+            <th>CCCD</th>
+            <th>Số Điện Thoại</th>
+            <th>Email</th>
+            <th>Loại Phòng</th>
+            <th>Ngày Đến</th>
+            <th>Ngày Đi</th>
+            <th>Trạng Thái</th>
+            <th>Hành Động</th>
+          </tr>
+        </thead>
+        <tbody id="bangDatPhong"></tbody>
+      </table>
+    </div>
+
+    <div class="modal" id="editModal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <h2>Chỉnh Sửa Đặt Phòng</h2>
+        <form id="editForm" class="form-grid">
+          <input type="hidden" id="editIndex">
+          <div>
+            <label for="editTenKhach">Tên Khách Hàng</label>
+            <input type="text" id="editTenKhach" required>
+          </div>
+          <div class="tooltip">
+            <label for="editCccd">Số CCCD</label>
+            <input type="text" id="editCccd" required>
+            <span class="tooltiptext" id="editCccdTooltip" style="display: none;">CCCD không thể chỉnh sửa do trạng thái hiệu lực.</span>
+          </div>
+          <div>
+            <label for="editSoDienThoai">Số Điện Thoại</label>
+            <input type="text" id="editSoDienThoai" required>
+          </div>
+          <div>
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" required>
+          </div>
+          <div>
+            <label for="editLoaiPhong">Loại Phòng</label>
+            <select id="editLoaiPhong" required>
+              <option value="">Chọn loại phòng</option>
+            </select>
+          </div>
+          <div>
+            <label for="editNgayDen">Ngày Đến</label>
+            <input type="date" id="editNgayDen" required>
+          </div>
+          <div>
+            <label for="editNgayDi">Ngày Đi</label>
+            <input type="date" id="editNgayDi" required>
+          </div>
+          <div>
+            <label for="editTrangThai">Trạng Thái</label>
+            <select id="editTrangThai" required>
+              <option value="Đang chờ">Đang chờ</option>
+              <option value="Đã nhận">Đã nhận</option>
+              <option value="Đã hủy">Đã hủy</option>
+              <option value="Đã trả">Đã trả</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-add"><i class="fas fa-save"></i> Lưu</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let danhSachPhong = JSON.parse(localStorage.getItem("datPhong")) || [];
+    let danhSachGiaPhong = JSON.parse(localStorage.getItem("giaPhong")) || [];
+    let danhSachKhachHang = JSON.parse(localStorage.getItem("khachHang")) || [];
+    let isSubmitting = false;
+
+    // Migrate old datPhong and khachHang data
+    if (danhSachPhong.some(p => !p.soDienThoai || !p.email)) {
+      danhSachPhong = danhSachPhong.map(p => ({
+        tenKhach: p.tenKhach,
+        cccd: p.cccd,
+        soDienThoai: p.soDienThoai || "Chưa cung cấp",
+        email: p.email || "Chưa cung cấp",
+        loaiPhong: p.loaiPhong,
+        ngayDen: p.ngayDen,
+        ngayDi: p.ngayDi,
+        trangThai: p.trangThai,
+        ngayTraPhong: p.ngayTraPhong
+      }));
+      localStorage.setItem("datPhong", JSON.stringify(danhSachPhong));
+      console.log(`[${new Date().toISOString()}] Đã chuyển đổi dữ liệu datPhong:`, danhSachPhong);
+    }
+    if (danhSachKhachHang.some(kh => kh.id || kh.idCard || kh.name)) {
+      danhSachKhachHang = danhSachKhachHang.map(kh => ({
+        cccd: kh.idCard || kh.cccd,
+        tenKhach: kh.name || kh.tenKhach,
+        soDienThoai: kh.phone || kh.soDienThoai || "Chưa cung cấp",
+        email: kh.email || "Chưa cung cấp",
+        createdAt: kh.createdAt || new Date().toISOString()
+      }));
+      localStorage.setItem("khachHang", JSON.stringify(danhSachKhachHang));
+      console.log(`[${new Date().toISOString()}] Đã chuyển đổi dữ liệu khachHang:`, danhSachKhachHang);
+    }
+
+    // Hàm hiển thị loại phòng
+    function hienThiLoaiPhong(selectElement = document.getElementById("loaiPhong")) {
+      selectElement.innerHTML = '<option value="">Chọn loại phòng</option>';
+      danhSachGiaPhong.forEach(phong => {
+        selectElement.innerHTML += `<option value="${phong.loaiPhong}">${phong.loaiPhong} - ${phong.giaPhong.toLocaleString()} VND</option>`;
+      });
+    }
+
+    // Hàm hiển thị danh sách đặt phòng
+    function hienThiDanhSach() {
+      const tbody = document.getElementById("bangDatPhong");
+      tbody.innerHTML = "";
+      if (danhSachPhong.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="no-data">Không có dữ liệu đặt phòng. Vui lòng thêm đặt phòng mới.</td></tr>`;
+        console.log(`[${new Date().toISOString()}] Hiển thị đặt phòng:`, { validItems: 0, invalidItems: 0 });
+        return;
+      }
+      danhSachPhong.forEach((phong, index) => {
+        if (!phong.cccd || !phong.tenKhach || !phong.loaiPhong) {
+          console.warn(`[${new Date().toISOString()}] Dữ liệu đặt phòng không hợp lệ:`, phong);
+          return;
+        }
+        tbody.innerHTML += `
+          <tr>
+            <td class="text-ellipsis">${phong.tenKhach}</td>
+            <td>${phong.cccd}</td>
+            <td>${phong.soDienThoai}</td>
+            <td class="text-ellipsis">${phong.email}</td>
+            <td>${phong.loaiPhong}</td>
+            <td>${phong.ngayDen}</td>
+            <td>${phong.ngayDi}</td>
+            <td>${phong.trangThai}</td>
+            <td>
+              <button class="btn-add" onclick="openEditModal(${index})"><i class="fas fa-edit"></i> Sửa</button>
+              <button class="btn-danger" onclick="xoaDatPhong(${index})"><i class="fas fa-trash"></i> Hủy</button>
+            </td>
+          </tr>
+        `;
+      });
+      console.log(`[${new Date().toISOString()}] Hiển thị đặt phòng:`, { validItems: danhSachPhong.length, invalidItems: 0 });
+    }
+
+    // Hàm hiển thị thông báo
+    function showMessage(message, isSuccess = false) {
+      const messageElement = isSuccess ? document.getElementById("successMessage") : document.getElementById("errorMessage");
+      messageElement.textContent = message;
+      messageElement.style.display = "block";
+      setTimeout(() => {
+        messageElement.style.display = "none";
+      }, 3000);
+    }
+
+    // Hàm kiểm tra CCCD hợp lệ
+    function kiemTraCCCD(cccd, excludeCccd = null) {
+      const regex = /^\d{12}$/;
+      if (!regex.test(cccd)) {
+        return "Số CCCD phải là 12 chữ số!";
+      }
+      if (danhSachPhong.some(p => p.cccd === cccd && p.cccd !== excludeCccd && p.trangThai !== "Đã hủy" && p.trangThai !== "Đã trả")) {
+        return "Số CCCD này đang được sử dụng cho một đặt phòng hiệu lực!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra tên khách hợp lệ
+    function kiemTraTenKhach(tenKhach) {
+      const regex = /^[a-zA-ZÀ-ỹ\s]+$/;
+      if (!tenKhach || tenKhach.length < 2) {
+        return "Tên khách hàng không được để trống và phải có ít nhất 2 ký tự!";
+      }
+      if (!regex.test(tenKhach)) {
+        return "Tên khách hàng chỉ được chứa chữ cái và dấu cách!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra số điện thoại hợp lệ
+    function kiemTraSoDienThoai(soDienThoai) {
+      const regex = /^0\d{9}$/;
+      if (!regex.test(soDienThoai)) {
+        return "Số điện thoại phải là 10 chữ số và bắt đầu bằng 0!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra email hợp lệ
+    function kiemTraEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!regex.test(email)) {
+        return "Email không hợp lệ!";
+      }
+      return null;
+    }
+
+    // Hàm kiểm tra phòng trống
+    function kiemTraPhongTrong(loaiPhong, ngayDen, ngayDi) {
+      const dateDen = new Date(ngayDen);
+      const dateDi = new Date(ngayDi);
+      return !danhSachPhong.some(phong => 
+        phong.loaiPhong === loaiPhong && 
+        phong.trangThai !== "Đã hủy" && 
+        phong.trangThai !== "Đã trả" &&
+        new Date(phong.ngayDen) <= dateDi && 
+        new Date(phong.ngayDi) >= dateDen
+      );
+    }
+
+    // Hàm kiểm tra trạng thái hiệu lực
+    function kiemTraTrangThaiHieuLuc(trangThai) {
+      return trangThai === "Đang chờ" || trangThai === "Đã nhận";
+    }
+
+    // Hàm cập nhật khách hàng
+    function capNhatKhachHang(tenKhach, cccd, soDienThoai, email) {
+      const khachHang = danhSachKhachHang.find(kh => kh.cccd === cccd);
+      if (!khachHang) {
+        danhSachKhachHang.push({
+          cccd,
+          tenKhach,
+          soDienThoai,
+          email,
+          createdAt: new Date().toISOString()
+        });
+        console.log(`[${new Date().toISOString()}] Thêm khách hàng từ đặt phòng:`, { cccd, tenKhach, soDienThoai, email });
+      } else {
+        khachHang.tenKhach = tenKhach;
+        khachHang.soDienThoai = soDienThoai;
+        khachHang.email = email;
+        console.log(`[${new Date().toISOString()}] Cập nhật khách hàng từ đặt phòng:`, khachHang);
+      }
+      localStorage.setItem("khachHang", JSON.stringify(danhSachKhachHang));
+    }
+
+    // Hàm thêm đặt phòng
+    function themDatPhong() {
+      if (isSubmitting) return;
+      isSubmitting = true;
+      const button = document.querySelector(".btn-add");
+      button.classList.add("submitting");
+
+      const tenKhach = document.getElementById("tenKhach").value.trim();
+      const cccd = document.getElementById("cccd").value.trim();
+      const soDienThoai = document.getElementById("soDienThoai").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const loaiPhong = document.getElementById("loaiPhong").value;
+      const ngayDen = document.getElementById("ngayDen").value;
+      const ngayDi = document.getElementById("ngayDi").value;
+      const trangThai = document.getElementById("trangThai").value;
+
+      if (!tenKhach || !cccd || !soDienThoai || !email || !loaiPhong || !ngayDen || !ngayDi) {
+        showMessage("Vui lòng điền đầy đủ thông tin!");
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+
+      const tenKhachError = kiemTraTenKhach(tenKhach);
+      const cccdError = kiemTraCCCD(cccd);
+      const phoneError = kiemTraSoDienThoai(soDienThoai);
+      const emailError = kiemTraEmail(email);
+
+      if (tenKhachError) {
+        showMessage(tenKhachError);
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+      if (cccdError) {
+        showMessage(cccdError);
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+      if (phoneError) {
+        showMessage(phoneError);
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+      if (emailError) {
+        showMessage(emailError);
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+
+      if (new Date(ngayDen) >= new Date(ngayDi)) {
+        showMessage("Ngày đi phải sau ngày đến!");
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+
+      if (!danhSachGiaPhong.some(gia => gia.loaiPhong === loaiPhong)) {
+        showMessage("Loại phòng không tồn tại!");
+        isSubmitting = false;
+        button.classList.remove("submitting");
+        return;
+      }
+
+      if (kiemTraPhongTrong(loaiPhong, ngayDen, ngayDi)) {
+        capNhatKhachHang(tenKhach, cccd, soDienThoai, email);
+        const newBooking = { tenKhach, cccd, soDienThoai, email, loaiPhong, ngayDen, ngayDi, trangThai };
+        danhSachPhong.push(newBooking);
+        localStorage.setItem("datPhong", JSON.stringify(danhSachPhong));
+        hienThiDanhSach();
+        showMessage("Thêm đặt phòng thành công!", true);
+        console.log(`[${new Date().toISOString()}] Thêm đặt phòng:`, newBooking);
+        document.getElementById("bookingForm").reset();
+      } else {
+        showMessage("Phòng đã được đặt trong khoảng thời gian này!");
+      }
+      isSubmitting = false;
+      button.classList.remove("submitting");
+    }
+
+    // Hàm xóa đặt phòng
+    function xoaDatPhong(index) {
+      const phong = danhSachPhong[index];
+      if (kiemTraTrangThaiHieuLuc(phong.trangThai)) {
+        showMessage("Không thể hủy đặt phòng đang ở trạng thái hiệu lực!");
+        console.log(`[${new Date().toISOString()}] Hủy đặt phòng thất bại do trạng thái hiệu lực:`, phong);
+        return;
+      }
+      if (confirm(`Bạn có chắc chắn muốn hủy đặt phòng của ${phong.tenKhach}?`)) {
+        const deletedBooking = danhSachPhong.splice(index, 1)[0];
+        localStorage.setItem("datPhong", JSON.stringify(danhSachPhong));
+        hienThiDanhSach();
+        showMessage("Hủy đặt phòng thành công!", true);
+        console.log(`[${new Date().toISOString()}] Hủy đặt phòng:`, deletedBooking);
+      }
+    }
+
+    // Hàm mở modal chỉnh sửa
+    function openEditModal(index) {
+      const phong = danhSachPhong[index];
+      document.getElementById("editIndex").value = index;
+      document.getElementById("editTenKhach").value = phong.tenKhach;
+      document.getElementById("editCccd").value = phong.cccd;
+      document.getElementById("editSoDienThoai").value = phong.soDienThoai;
+      document.getElementById("editEmail").value = phong.email;
+      hienThiLoaiPhong(document.getElementById("editLoaiPhong"));
+      document.getElementById("editLoaiPhong").value = phong.loaiPhong;
+      document.getElementById("editNgayDen").value = phong.ngayDen;
+      document.getElementById("editNgayDi").value = phong.ngayDi;
+      document.getElementById("editTrangThai").value = phong.trangThai;
+      const isActive = kiemTraTrangThaiHieuLuc(phong.trangThai);
+      const cccdInput = document.getElementById("editCccd");
+      const cccdTooltip = document.getElementById("editCccdTooltip");
+      cccdInput.disabled = isActive;
+      cccdTooltip.style.display = isActive ? "block" : "none";
+      document.getElementById("editModal").style.display = "block";
+    }
+
+    // Hàm đóng modal
+    function closeModal() {
+      document.getElementById("editModal").style.display = "none";
+      document.getElementById("editForm").reset();
+    }
+
+    // Hàm chỉnh sửa đặt phòng
+    document.getElementById("editForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (isSubmitting) return;
+      isSubmitting = true;
+
+      const index = parseInt(document.getElementById("editIndex").value);
+      const tenKhach = document.getElementById("editTenKhach").value.trim();
+      const cccd = document.getElementById("editCccd").value.trim();
+      const soDienThoai = document.getElementById("editSoDienThoai").value.trim();
+      const email = document.getElementById("editEmail").value.trim();
+      const loaiPhong = document.getElementById("editLoaiPhong").value;
+      const ngayDen = document.getElementById("editNgayDen").value;
+      const ngayDi = document.getElementById("editNgayDi").value;
+      const trangThai = document.getElementById("editTrangThai").value;
+
+      if (!tenKhach || !cccd || !soDienThoai || !email || !loaiPhong || !ngayDen || !ngayDi) {
+        showMessage("Vui lòng điền đầy đủ thông tin!");
+        isSubmitting = false;
+        return;
+      }
+
+      const tenKhachError = kiemTraTenKhach(tenKhach);
+      const cccdError = kiemTraCCCD(cccd, danhSachPhong[index].cccd);
+      const phoneError = kiemTraSoDienThoai(soDienThoai);
+      const emailError = kiemTraEmail(email);
+
+      if (tenKhachError) {
+        showMessage(tenKhachError);
+        isSubmitting = false;
+        return;
+      }
+      if (cccdError) {
+        showMessage(cccdError);
+        isSubmitting = false;
+        return;
+      }
+      if (phoneError) {
+        showMessage(phoneError);
+        isSubmitting = false;
+        return;
+      }
+      if (emailError) {
+        showMessage(emailError);
+        isSubmitting = false;
+        return;
+      }
+
+      if (new Date(ngayDen) >= new Date(ngayDi)) {
+        showMessage("Ngày đi phải sau ngày đến!");
+        isSubmitting = false;
+        return;
+      }
+
+      if (!danhSachGiaPhong.some(gia => gia.loaiPhong === loaiPhong)) {
+        showMessage("Loại phòng không tồn tại!");
+        isSubmitting = false;
+        return;
+      }
+
+      if (kiemTraPhongTrong(loaiPhong, ngayDen, ngayDi) || danhSachPhong[index].loaiPhong === loaiPhong) {
+        capNhatKhachHang(tenKhach, cccd, soDienThoai, email);
+        danhSachPhong[index] = { tenKhach, cccd, soDienThoai, email, loaiPhong, ngayDen, ngayDi, trangThai };
+        localStorage.setItem("datPhong", JSON.stringify(danhSachPhong));
+        hienThiDanhSach();
+        closeModal();
+        showMessage("Cập nhật đặt phòng thành công!", true);
+        console.log(`[${new Date().toISOString()}] Cập nhật đặt phòng:`, danhSachPhong[index]);
+      } else {
+        showMessage("Phòng đã được đặt trong khoảng thời gian này!");
+      }
+      isSubmitting = false;
+    });
+
+    // Hàm toggle sidebar
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const mainContent = document.getElementById("mainContent");
+      const backdrop = document.getElementById("backdrop");
+      sidebar.classList.toggle("active");
+      mainContent.classList.toggle("full");
+      backdrop.classList.toggle("active");
+    }
+
+    // Khởi tạo trang
+    window.onload = () => {
+      hienThiLoaiPhong();
+      hienThiDanhSach();
+    };
+  </script>
+</body>
+</html>

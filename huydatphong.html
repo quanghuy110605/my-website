@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hủy Đặt Phòng</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #2e2e2e;
+      color: white;
+      position: fixed;
+      padding-top: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul a {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+      font-size: 15px;
+    }
+
+    .sidebar ul a:hover {
+      background: #3d3d3d;
+      cursor: pointer;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eaeaea;
+    }
+
+    .btn-cancel {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn-cancel:hover {
+      background: #c0392b;
+    }
+
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .success-message {
+      color: green;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+
+    .logout {
+      border-top: 1px solid #444;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <a href="trangchu.html"><i class="fas fa-home menu-icon"></i>Trang Chủ</a>
+      <a href="quanlytaikhoan.html"><i class="fas fa-user-shield menu-icon"></i>Quản Lý Tài Khoản</a>
+      <a href="datphong.html"><i class="fas fa-bed menu-icon"></i>Đặt Phòng</a>
+      <a href="datphongonline.html"><i class="fas fa-globe menu-icon"></i>Đặt Phòng Online</a>
+      <a href="timkiemthongtin.html"><i class="fas fa-search menu-icon"></i>Tìm Kiếm Thông Tin</a>
+      <a href="nhanphong.html"><i class="fas fa-door-open menu-icon"></i>Nhận Phòng</a>
+      <a href="traphong.html"><i class="fas fa-door-closed menu-icon"></i>Trả Phòng</a>
+      <a href="dichvu.html"><i class="fas fa-concierge-bell menu-icon"></i>Dịch Vụ</a>
+      <a href="khachhang.html"><i class="fas fa-users menu-icon"></i>Khách Hàng</a>
+      <a href="xemdatphong.html"><i class="fas fa-calendar-check menu-icon"></i>Xem Đặt Phòng</a>
+      <a href="huydatphong.html"><i class="fas fa-calendar-times menu-icon"></i>Hủy Đặt Phòng</a>
+      <a href="giaphong.html"><i class="fas fa-money-bill menu-icon"></i>Giá Phòng</a>
+      <a href="doanhthu.html"><i class="fas fa-chart-line menu-icon"></i>Doanh Thu</a>
+      <a href="baocao.html"><i class="fas fa-file-alt menu-icon"></i>Báo Cáo</a>
+    </ul>
+    <ul class="logout">
+      <a href="dangnhap.html"><i class="fas fa-sign-out-alt menu-icon"></i>Đăng Xuất</a>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Hủy Đặt Phòng</h1>
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Khách</th>
+          <th>Loại Phòng</th>
+          <th>Ngày Đến</th>
+          <th>Ngày Đi</th>
+          <th>Trạng Thái</th>
+          <th>Hành Động</th>
+        </tr>
+      </thead>
+      <tbody id="bangHuyDatPhong"></tbody>
+    </table>
+  </div>
+
+  <script>
+    let danhSachPhong = JSON.parse(localStorage.getItem("datPhong")) || [];
+
+    // Hàm hiển thị thông báo
+    function showMessage(message, isSuccess = false) {
+      const messageElement = isSuccess ? document.getElementById("successMessage") : document.getElementById("errorMessage");
+      messageElement.textContent = message;
+      messageElement.style.display = "block";
+      setTimeout(() => {
+        messageElement.style.display = "none";
+      }, 3000);
+    }
+
+    // Hàm hiển thị danh sách đặt phòng có thể hủy
+    function hienThiDanhSach() {
+      const tbody = document.getElementById("bangHuyDatPhong");
+      tbody.innerHTML = "";
+      let validBookings = 0;
+      let invalidBookings = 0;
+
+      if (!danhSachPhong.length) {
+        showMessage("Không có dữ liệu đặt phòng. Vui lòng thêm booking ở trang Đặt Phòng.");
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data">Không có dữ liệu đặt phòng. Vui lòng thêm booking ở trang Đặt Phòng.</td></tr>`;
+        return;
+      }
+
+      danhSachPhong.forEach((phong, index) => {
+        if (!phong.loaiPhong || !phong.ngayDen || !phong.ngayDi || isNaN(new Date(phong.ngayDen)) || isNaN(new Date(phong.ngayDi))) {
+          console.warn("Dữ liệu đặt phòng không hợp lệ:", phong);
+          invalidBookings++;
+          return;
+        }
+        if (phong.trangThai === "Đang chờ" || phong.trangThai === "Đã nhận") {
+          validBookings++;
+          tbody.innerHTML += `
+            <tr>
+              <td>${phong.tenKhach || "Chưa cung cấp"}</td>
+              <td>${phong.loaiPhong}</td>
+              <td>${phong.ngayDen}</td>
+              <td>${phong.ngayDi}</td>
+              <td>${phong.trangThai}</td>
+              <td>
+                <button class="btn-cancel" onclick="huyDatPhong(${index})">Hủy</button>
+              </td>
+            </tr>
+          `;
+        } else if (phong.trangThai === "Đã trả" || phong.trangThai === "Đã hủy") {
+          console.log(`Không hiển thị booking vì trạng thái không hợp lệ cho hủy: ${phong.trangThai}`, phong);
+        }
+      });
+
+      if (validBookings === 0 && danhSachPhong.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data">Không tìm thấy booking có thể hủy (trạng thái Đang chờ hoặc Đã nhận). Vui lòng kiểm tra ở trang Đặt Phòng hoặc Nhận Phòng.</td></tr>`;
+      }
+
+      console.log("Danh sách phòng:", danhSachPhong, `Valid (có thể hủy): ${validBookings}, Invalid: ${invalidBookings}`);
+    }
+
+    // Hàm hủy đặt phòng
+    function huyDatPhong(index) {
+      const phong = danhSachPhong[index];
+      if (phong.trangThai !== "Đang chờ" && phong.trangThai !== "Đã nhận") {
+        showMessage("Không thể hủy booking với trạng thái này!");
+        return;
+      }
+      if (confirm(`Bạn có chắc chắn muốn hủy đặt phòng cho khách ${phong.tenKhach || "không xác định"}?`)) {
+        danhSachPhong[index].trangThai = "Đã hủy";
+        localStorage.setItem("datPhong", JSON.stringify(danhSachPhong));
+        showMessage(`Hủy đặt phòng thành công cho ${phong.tenKhach || "khách"}!`, true);
+        hienThiDanhSach();
+      }
+    }
+
+    // Hiển thị danh sách khi trang được tải
+    window.onload = hienThiDanhSach;
+  </script>
+</body>
+</html>

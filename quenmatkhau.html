@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quên Mật Khẩu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .form-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #3700ff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #2a00cc;
+    }
+    .link {
+      margin-top: 10px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Quên Mật Khẩu</h2>
+    <input type="text" id="username" placeholder="Tên đăng nhập">
+    <button onclick="recoverPassword()">Lấy lại mật khẩu</button>
+    <a class="link" href="dangnhap.html">Quay lại đăng nhập</a>
+  </div>
+
+  <script>
+    function recoverPassword() {
+      const username = document.getElementById('username').value.trim();
+      const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
+
+      const found = accounts.find(acc => acc.username === username);
+
+      if (found) {
+        alert("Mật khẩu của bạn là: " + found.password);
+      } else {
+        alert("Không tìm thấy tài khoản!");
+      }
+    }
+  </script>
+</body>
+</html>

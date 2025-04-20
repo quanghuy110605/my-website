@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Lý Tài Khoản</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #2e2e2e;
+      color: white;
+      position: fixed;
+      padding-top: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul a {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+      font-size: 15px;
+    }
+
+    .sidebar ul a:hover {
+      background: #3d3d3d;
+      cursor: pointer;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    .logout {
+      border-top: 1px solid #444;
+      margin-top: auto;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #2e2e2e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2e2e2e;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #c0392b;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <a href="trangchu.html"><i class="fas fa-home menu-icon"></i>Trang Chủ</a>
+      <a href="quanlytaikhoan.html"><i class="fas fa-user-shield menu-icon"></i>Quản Lý Tài Khoản</a>
+      <a href="datphong.html"><i class="fas fa-bed menu-icon"></i>Đặt Phòng</a>
+      <a href="datphongonline.html"><i class="fas fa-globe menu-icon"></i>Đặt Phòng Online</a>
+      <a href="timkiemthongtin.html"><i class="fas fa-search menu-icon"></i>Tìm Kiếm Thông Tin</a>
+      <a href="nhanphong.html"><i class="fas fa-door-open menu-icon"></i>Nhận Phòng</a>
+      <a href="traphong.html"><i class="fas fa-door-closed menu-icon"></i>Trả Phòng</a>
+      <a href="dichvu.html"><i class="fas fa-concierge-bell menu-icon"></i>Dịch Vụ</a>
+      <a href="khachhang.html"><i class="fas fa-users menu-icon"></i>Khách Hàng</a>
+      <a href="xemdatphong.html"><i class="fas fa-calendar-check menu-icon"></i>Xem Đặt Phòng</a>
+      <a href="huydatphong.html"><i class="fas fa-calendar-times menu-icon"></i>Hủy Đặt Phòng</a>
+      <a href="giaphong.html"><i class="fas fa-money-bill menu-icon"></i>Giá Phòng</a>
+      <a href="doanhthu.html"><i class="fas fa-chart-line menu-icon"></i>Doanh Thu</a>
+      <a href="baocao.html"><i class="fas fa-file-alt menu-icon"></i>Báo Cáo</a>
+    </ul>
+    <ul class="logout">
+      <a href="dangnhap.html"><i class="fas fa-sign-out-alt menu-icon"></i>Đăng Xuất</a>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Quản Lý Tài Khoản</h1>
+
+    <form id="formTaiKhoan">
+      <h2>Thêm Tài Khoản</h2>
+      <label for="username">Tên Đăng Nhập</label>
+      <input type="text" id="username" required>
+      
+      <label for="password">Mật Khẩu</label>
+      <input type="password" id="password" required>
+
+      <label for="role">Cấp Tài Khoản</label>
+      <select id="role">
+        <option value="Quản lý">Quản lý</option>
+        <option value="Nhân viên">Nhân viên</option>
+        <option value="Khách hàng">Khách hàng</option>
+      </select>
+
+      <button type="submit">Thêm Tài Khoản</button>
+    </form>
+
+    <h2>Danh Sách Tài Khoản</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tên Đăng Nhập</th>
+          <th>Cấp Tài Khoản</th>
+          <th>Thao Tác</th>
+        </tr>
+      </thead>
+      <tbody id="danhsach"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('formTaiKhoan');
+    const tbody = document.getElementById('danhsach');
+    let danhSachTaiKhoan = JSON.parse(localStorage.getItem("taiKhoanList")) || [];
+
+    function hienThiDanhSach() {
+      tbody.innerHTML = "";
+      danhSachTaiKhoan.forEach((tk, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${tk.username}</td>
+          <td>${tk.role}</td>
+          <td><button class="delete-btn" onclick="xoaTaiKhoan(${index})">Xóa</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      danhSachTaiKhoan.push({ username, password, role });
+      localStorage.setItem("taiKhoanList", JSON.stringify(danhSachTaiKhoan));
+      hienThiDanhSach();
+      form.reset();
+    });
+
+    function xoaTaiKhoan(index) {
+      if (confirm("Bạn có chắc muốn xóa tài khoản này không?")) {
+        danhSachTaiKhoan.splice(index, 1);
+        localStorage.setItem("taiKhoanList", JSON.stringify(danhSachTaiKhoan));
+        hienThiDanhSach();
+      }
+    }
+
+    // Load dữ liệu khi trang mở
+    hienThiDanhSach();
+  </script>
+</body>
+</html>

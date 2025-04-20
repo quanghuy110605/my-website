@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tìm Kiếm Thông Tin</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #2e2e2e;
+      color: white;
+      position: fixed;
+      padding-top: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul a {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid #444;
+      font-size: 15px;
+    }
+
+    .sidebar ul a:hover {
+      background: #3d3d3d;
+    }
+
+    .menu-icon {
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    h1, h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #27ae60;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #eaeaea;
+      color: #333;
+    }
+
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .success-message {
+      color: green;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .no-data {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+
+    .logout {
+      border-top: 1px solid #444;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <a href="trangchu.html"><i class="fas fa-home menu-icon"></i>Trang Chủ</a>
+      <a href="quanlytaikhoan.html"><i class="fas fa-user-shield menu-icon"></i>Quản Lý Tài Khoản</a>
+      <a href="datphong.html"><i class="fas fa-bed menu-icon"></i>Đặt Phòng</a>
+      <a href="datphongonline.html"><i class="fas fa-globe menu-icon"></i>Đặt Phòng Online</a>
+      <a href="timkiemthongtin.html"><i class="fas fa-search menu-icon"></i>Tìm Kiếm Thông Tin</a>
+      <a href="nhanphong.html"><i class="fas fa-door-open menu-icon"></i>Nhận Phòng</a>
+      <a href="traphong.html"><i class="fas fa-door-closed menu-icon"></i>Trả Phòng</a>
+      <a href="dichvu.html"><i class="fas fa-concierge-bell menu-icon"></i>Dịch Vụ</a>
+      <a href="khachhang.html"><i class="fas fa-users menu-icon"></i>Khách Hàng</a>
+      <a href="xemdatphong.html"><i class="fas fa-calendar-check menu-icon"></i>Xem Đặt Phòng</a>
+      <a href="huydatphong.html"><i class="fas fa-calendar-times menu-icon"></i>Hủy Đặt Phòng</a>
+      <a href="giaphong.html"><i class="fas fa-money-bill menu-icon"></i>Giá Phòng</a>
+      <a href="doanhthu.html"><i class="fas fa-chart-line menu-icon"></i>Doanh Thu</a>
+      <a href="baocao.html"><i class="fas fa-file-alt menu-icon"></i>Báo Cáo</a>
+    </ul>
+    <ul class="logout">
+      <a href="dangnhap.html"><i class="fas fa-sign-out-alt menu-icon"></i>Đăng Xuất</a>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    <h1>Tìm Kiếm Thông Tin</h1>
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+
+    <form id="formTimKiem">
+      <label for="loai">Loại Tìm Kiếm</label>
+      <select id="loai">
+        <option value="phong">Thông tin phòng</option>
+        <option value="khachhang">Thông tin khách hàng</option>
+        <option value="datphong">Tìm kiếm đặt phòng</option>
+      </select>
+
+      <label for="tukhoa">Từ khóa</label>
+      <input type="text" id="tukhoa" placeholder="Nhập từ khóa tìm kiếm" required>
+
+      <button type="submit">Tìm Kiếm</button>
+    </form>
+
+    <h2>Kết Quả Tìm Kiếm</h2>
+    <table>
+      <thead id="tableHeader"></thead>
+      <tbody id="ketqua"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById("formTimKiem");
+    const ketqua = document.getElementById("ketqua");
+    const tableHeader = document.getElementById("tableHeader");
+
+    // Hàm hiển thị thông báo
+    function showMessage(message, isSuccess = false) {
+      const messageElement = isSuccess ? document.getElementById("successMessage") : document.getElementById("errorMessage");
+      messageElement.textContent = message;
+      messageElement.style.display = "block";
+      setTimeout(() => {
+        messageElement.style.display = "none";
+      }, 3000);
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const loai = document.getElementById("loai").value;
+      const tukhoa = document.getElementById("tukhoa").value.trim().toLowerCase();
+
+      // Validate từ khóa
+      if (!tukhoa) {
+        showMessage("Vui lòng nhập từ khóa tìm kiếm!");
+        ketqua.innerHTML = `<tr><td colspan="${loai === 'phong' ? 2 : loai === 'khachhang' ? 4 : 5}" class="no-data">Không có dữ liệu do thiếu từ khóa.</td></tr>`;
+        return;
+      }
+
+      let ketQuaTimKiem = [];
+      let validItems = 0;
+      let invalidItems = 0;
+
+      if (loai === "phong") {
+        const danhSachGiaPhong = JSON.parse(localStorage.getItem("giaPhong")) || [];
+        ketQuaTimKiem = danhSachGiaPhong.filter(gia => {
+          if (!gia.loaiPhong || !gia.giaPhong) {
+            console.warn("Dữ liệu giá phòng không hợp lệ:", gia);
+            invalidItems++;
+            return false;
+          }
+          validItems++;
+          return gia.loaiPhong.toLowerCase().includes(tukhoa) || 
+                 gia.giaPhong.toString().includes(tukhoa);
+        });
+        tableHeader.innerHTML = `
+          <tr>
+            <th>Loại Phòng</th>
+            <th>Giá Phòng (VND)</th>
+          </tr>
+        `;
+      } else if (loai === "khachhang") {
+        const danhSachKhachHang = JSON.parse(localStorage.getItem("khachHang")) || [];
+        ketQuaTimKiem = danhSachKhachHang.filter(kh => {
+          if (!kh.name || !kh.idCard) {
+            console.warn("Dữ liệu khách hàng không hợp lệ:", kh);
+            invalidItems++;
+            return false;
+          }
+          validItems++;
+          return kh.name.toLowerCase().includes(tukhoa) || 
+                 kh.idCard.toLowerCase().includes(tukhoa) || 
+                 (kh.phone && kh.phone.toLowerCase().includes(tukhoa)) || 
+                 (kh.email && kh.email.toLowerCase().includes(tukhoa));
+        });
+        tableHeader.innerHTML = `
+          <tr>
+            <th>Tên Khách Hàng</th>
+            <th>CMND/CCCD</th>
+            <th>Số Điện Thoại</th>
+            <th>Email</th>
+          </tr>
+        `;
+      } else if (loai === "datphong") {
+        const danhSachPhong = JSON.parse(localStorage.getItem("datPhong")) || [];
+        ketQuaTimKiem = danhSachPhong.filter(phong => {
+          if (!phong.tenKhach || !phong.loaiPhong || !phong.trangThai) {
+            console.warn("Dữ liệu đặt phòng không hợp lệ:", phong);
+            invalidItems++;
+            return false;
+          }
+          validItems++;
+          return phong.tenKhach.toLowerCase().includes(tukhoa) || 
+                 phong.loaiPhong.toLowerCase().includes(tukhoa) || 
+                 phong.trangThai.toLowerCase().includes(tukhoa) || 
+                 (phong.ngayDen && phong.ngayDen.includes(tukhoa)) || 
+                 (phong.ngayDi && phong.ngayDi.includes(tukhoa)) || 
+                 (phong.ngayTraPhong && phong.ngayTraPhong.includes(tukhoa));
+        });
+        tableHeader.innerHTML = `
+          <tr>
+            <th>Tên Khách</th>
+            <th>Loại Phòng</th>
+            <th>Ngày Đến</th>
+            <th>Ngày Đi</th>
+            <th>Trạng Thái</th>
+          </tr>
+        `;
+      }
+
+      hienThiKetQua(loai, ketQuaTimKiem);
+      console.log(`Tìm kiếm ${loai}:`, { validItems, invalidItems, ketQuaTimKiem });
+      if (ketQuaTimKiem.length > 0) {
+        showMessage(`Tìm thấy ${ketQuaTimKiem.length} kết quả!`, true);
+      } else {
+        showMessage("Không tìm thấy kết quả phù hợp.");
+      }
+    });
+
+    function hienThiKetQua(loai, list) {
+      ketqua.innerHTML = "";
+      if (list.length === 0) {
+        ketqua.innerHTML = `<tr><td colspan="${loai === 'phong' ? 2 : loai === 'khachhang' ? 4 : 5}" class="no-data">Không tìm thấy kết quả. Vui lòng kiểm tra từ khóa hoặc dữ liệu ở trang ${loai === 'phong' ? 'Giá Phòng' : loai === 'khachhang' ? 'Khách Hàng' : 'Đặt Phòng'}.</td></tr>`;
+        return;
+      }
+
+      list.forEach(item => {
+        const row = document.createElement("tr");
+        if (loai === "phong") {
+          row.innerHTML = `
+            <td>${item.loaiPhong}</td>
+            <td>${item.giaPhong.toLocaleString()} VND</td>
+          `;
+        } else if (loai === "khachhang") {
+          row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.idCard}</td>
+            <td>${item.phone || "Chưa cung cấp"}</td>
+            <td>${item.email || "Chưa cung cấp"}</td>
+          `;
+        } else if (loai === "datphong") {
+          row.innerHTML = `
+            <td>${item.tenKhach}</td>
+            <td>${item.loaiPhong}</td>
+            <td>${item.ngayDen || "Chưa xác định"}</td>
+            <td>${item.ngayDi || "Chưa xác định"}</td>
+            <td>${item.trangThai}</td>
+          `;
+        }
+        ketqua.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>``
